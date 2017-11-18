@@ -8,10 +8,15 @@ import main.java.database.table.column.*;
 
 public class DbColumnFactory {
 
+	/**
+	 * Create an object DbColumn based on the data in the resultset
+	 * @param column
+	 * @return column
+	 * @throws SQLException
+	 */
 	public static DbColumn createColumn(ResultSet column) throws SQLException {
 		DbColumn dbCol = null;
 		String columnName, columnType, nullable, columnDefault;
-		String[] typeString;
 		int columnSize, decimalDigit, sqlType;
 		boolean isNullable = true;
 
@@ -28,6 +33,17 @@ public class DbColumnFactory {
 		return dbCol;
 	}
 
+	/**
+	 * Return a DbColumn based on the parameters
+	 * @param colName
+	 * @param colType
+	 * @param colDef
+	 * @param sqlType
+	 * @param colSize
+	 * @param decimalDigit
+	 * @param isNull
+	 * @return column
+	 */
 	private static DbColumn createColumn(String colName, String colType, String colDef, int sqlType, int colSize, int decimalDigit, boolean isNull) {
 		DbColumn dbCol = null;
 		switch (sqlType) {
@@ -36,7 +52,6 @@ public class DbColumnFactory {
 		case Types.TINYINT :
 		case Types.INTEGER :
 		case Types.BIGINT :
-			
 		case Types.DATE :
 		case Types.TIME :
 		case Types.TIMESTAMP :
@@ -53,6 +68,9 @@ public class DbColumnFactory {
 		case Types.LONGNVARCHAR :
 		case Types.LONGVARBINARY :
 		case Types.LONGVARCHAR :
+			if (colType.equals("ENUM") || colType.equals("SET")) {
+				colType = "VARCHAR";
+			}
 			dbCol = new DbColumnOneParam(colName, colType, colDef, colSize);
 			break;
 		case Types.DECIMAL :

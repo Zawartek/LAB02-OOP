@@ -10,6 +10,8 @@ import org.apache.log4j.Logger;
 
 public class DbBase {
 	protected static Logger log = Logger.getLogger(DbBase.class);
+	protected static final String STRING_QUOTE="`";
+
     private String dbName = null;
     private List<DbTable> tables;
 	
@@ -26,10 +28,21 @@ public class DbBase {
 		tables = new LinkedList<DbTable>();
 	}
 	
+	/**
+	 * Load the database
+	 * @param dbMetaData
+	 * @throws SQLException
+	 */
 	public void loadDB(DatabaseMetaData dbMetaData) throws SQLException {
 		loadDB(dbMetaData, null);
 	}
     
+	/**
+	 * Load the database tables corresponding a type in tableTypes
+	 * @param dbMetaData
+	 * @param tableTypes
+	 * @throws SQLException
+	 */
 	public void loadDB(DatabaseMetaData dbMetaData, String[] tableTypes) throws SQLException {
 		ResultSet result = null;
 		DbTable table = null;
@@ -52,21 +65,46 @@ public class DbBase {
 		log.debug("End method loadDB");
 	}
 	
+	/**
+	 * Return the database in SQL format
+	 * @return
+	 */
     public String toSQL()
     {
 		log.debug("DbBase : Start method toSQL");
         final StringBuffer sb = new StringBuffer();
+        sb.append("-- Database " + this.dbName + "\n");
         sb.append("CREATE DATABASE " + this.dbName + ";\n\n");
+        sb.append("-- Tables\n");
         for (DbTable table : tables)
         {
-            sb.append(table.toSQL());
+            sb.append("-- Table " + table.getName() + "\n");
+            sb.append(table.columnsToSQL());
         }
-
+        sb.append("-- Indexes\n");
         for (DbTable table : tables)
         {
+            sb.append("-- Table " + table.getName() + "\n");
             sb.append(table.indexesToSQL());
+        }
+        sb.append("-- Foreign Indexes\n");
+        for (DbTable table : tables)
+        {
+            sb.append("-- Table " + table.getName() + "\n");
+            sb.append(table.foreignIndexesToSQL());
         }
 		log.debug("DbBase : End method toSQL");
         return sb.toString();
+    }
+    
+    /**
+     * Return the string between two sql quote
+     * @param s
+     * @return
+     */
+    public static String stringToSQL(String s) {
+    	String newString = "";
+    	newString = STRING_QUOTE + s + STRING_QUOTE;
+    	return newString;
     }
 }

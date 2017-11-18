@@ -6,6 +6,12 @@ import main.java.database.DbTable.TableType;
 
 public class DbTableFactory {
 
+	/**
+	 * Create a DbTable based on the resultSet
+	 * @param column
+	 * @return
+	 * @throws SQLException
+	 */
 	public static DbTable createTable(ResultSet column) throws SQLException {
 		DbTable dbTab = null;
 		String tableName = null, tableType = null;
@@ -19,6 +25,12 @@ public class DbTableFactory {
 		return dbTab;
 	}
 
+	/**
+	 * Create a DbTable based on the table type
+	 * @param tableName
+	 * @param tableType
+	 * @return
+	 */
 	private static DbTable createTable(String tableName, TableType tableType) {
 		DbTable dbTab = null;
 		switch (tableType) {

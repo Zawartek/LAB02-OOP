@@ -1,7 +1,13 @@
 package main.java.database.table.column;
 
+import main.java.database.DbBase;
 import main.java.database.table.DbColumn;
 
+/**
+ * Database column with one parameter
+ * @author nicosim
+ *
+ */
 public class DbColumnOneParam extends DbColumn{
 	private int paramOne;
 
@@ -13,11 +19,11 @@ public class DbColumnOneParam extends DbColumn{
 	@Override
 	public String toSQL() {
         final StringBuffer sb = new StringBuffer();
-        sb.append("\t" + STRING_QUOTE + this.getName() + STRING_QUOTE + " " + this.getType() 
+        sb.append("\t" + DbBase.stringToSQL(this.getName()) + " " + this.getType() 
         	+ " (" + this.paramOne + ")"
         	+ " " + this.getNullableString());
         if (this.getDefault()!=null) {
-        	sb.append(" DEFAULT " + this.getDefault());
+        	sb.append(" DEFAULT \'" + this.getDefault() + "\'");
         }
 		return sb.toString();
 	}

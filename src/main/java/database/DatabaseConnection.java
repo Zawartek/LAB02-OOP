@@ -22,20 +22,32 @@ public class DatabaseConnection {
 		this.password = password;
 	}
 
+	/**
+	 * Return the database connection
+	 * @return connection
+	 */
 	public Connection getConnection() {
 		return connection;
 	}
 	
+	/**
+	 * Return the connection statement
+	 * @return statement
+	 */
 	public Statement getStatement() {
 		return statement;
 	}
 	
+	/**
+	 * Return the database metadata
+	 * @return
+	 */
 	public DatabaseMetaData getMetaData() {
 		return dbMeta;
 	}
 
 	/**
-	 * 
+	 * Init the Connection to the database
 	 * @throws Exception
 	 */
 	private void initialiseConnection() throws Exception{
@@ -64,7 +76,6 @@ public class DatabaseConnection {
 		}
 	}
 	
-
 	public static void main(String[] args) {
 		String dbName = "sakila";
 		String[] tabTypes = {"TABLE"};

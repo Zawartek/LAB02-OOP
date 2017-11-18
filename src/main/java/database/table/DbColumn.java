@@ -1,7 +1,11 @@
 package main.java.database.table;
 
+/**
+ * Database column
+ * @author nicosim
+ *
+ */
 public abstract class DbColumn {
-	protected static final String STRING_QUOTE="\'";
 	private String columnName;
 	private String columnType;
 	private String columnDefault;
@@ -14,20 +18,40 @@ public abstract class DbColumn {
 		this.columnDefault = colDef;
 	}
 	
+	/**
+	 * Get column name
+	 * @return column name
+	 */
 	public String getName() {
 		return columnName;
 	}
 	
+	/**
+	 * Get column type
+	 * @return column type
+	 */
 	public String getType() {
 		return columnType;
 	}
 	
+	/**
+	 * Get the default value
+	 * @return column default value
+	 */
 	public String getDefault() {
 		return columnDefault;
 	}
 
+	/**
+	 * Return the column in SQL format
+	 * @return column string
+	 */
 	public abstract String toSQL();
 	
+	/**
+	 * Return the "NULL" if the column is nullable else return "NOT NULL"
+	 * @return
+	 */
 	protected String getNullableString() {
 		String s = "";
 		if (isNullable) {
