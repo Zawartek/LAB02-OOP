@@ -84,7 +84,8 @@ public class DatabaseConnection {
 		try {
 			dbCon.initialiseConnection();
 			db.loadDB(dbCon.getMetaData(),tabTypes);
-			System.out.println(db.toSQL());
+			db.printToSql();
+			db.exportToSql();
 			dbCon.closeConnection();
 			
 		} catch (Exception e) {

@@ -1,5 +1,7 @@
 package main.java.database;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -106,5 +108,25 @@ public class DbBase {
     	String newString = "";
     	newString = STRING_QUOTE + s + STRING_QUOTE;
     	return newString;
+    }
+    
+    /**
+     * Display the string return by the toSql method
+     */
+    public void printToSql() {
+    	System.out.println(this.toSQL());
+    }
+    
+    /**
+     * Create the .sql file with the string return by toSql method
+     */
+    public void exportToSql() {
+    	try {
+			FileWriter file = new FileWriter("script.sql");
+			file.write(this.toSQL());
+			file.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
     }
 }
