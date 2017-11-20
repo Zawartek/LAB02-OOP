@@ -8,6 +8,7 @@ public class DbTableFactory {
 
 	/**
 	 * Create a DbTable based on the resultSet
+	 * 
 	 * @param column
 	 * @return
 	 * @throws SQLException
@@ -27,6 +28,7 @@ public class DbTableFactory {
 
 	/**
 	 * Create a DbTable based on the table type
+	 * 
 	 * @param tableName
 	 * @param tableType
 	 * @return
@@ -34,10 +36,10 @@ public class DbTableFactory {
 	private static DbTable createTable(String tableName, TableType tableType) {
 		DbTable dbTab = null;
 		switch (tableType) {
-		case TABLE :
+		case TABLE:
 			dbTab = new DbTable(tableName);
 			break;
-		default :
+		default:
 			break;
 		}
 		return dbTab;

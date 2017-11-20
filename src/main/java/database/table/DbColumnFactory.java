@@ -10,6 +10,7 @@ public class DbColumnFactory {
 
 	/**
 	 * Create an object DbColumn based on the data in the resultset
+	 * 
 	 * @param column
 	 * @return column
 	 * @throws SQLException
@@ -28,13 +29,14 @@ public class DbColumnFactory {
 		decimalDigit = column.getInt("DECIMAL_DIGITS");
 		nullable = column.getString("IS_NULLABLE");
 		isNullable = isNullable(nullable);
-		
+
 		dbCol = createColumn(columnName, columnType, columnDefault, sqlType, columnSize, decimalDigit, isNullable);
 		return dbCol;
 	}
 
 	/**
-	 * Return a DbColumn based on the parameters
+	 * Return a DbColumn object based on given parameters
+	 * 
 	 * @param colName
 	 * @param colType
 	 * @param colDef
@@ -44,61 +46,59 @@ public class DbColumnFactory {
 	 * @param isNull
 	 * @return column
 	 */
-	private static DbColumn createColumn(String colName, String colType, String colDef, int sqlType, int colSize, int decimalDigit, boolean isNull) {
+	private static DbColumn createColumn(String colName, String colType, String colDef, int sqlType, int colSize,
+			int decimalDigit, boolean isNull) {
 		DbColumn dbCol = null;
 		switch (sqlType) {
-		case Types.SMALLINT :
-		case Types.BIT :
-		case Types.TINYINT :
-		case Types.INTEGER :
-		case Types.BIGINT :
-		case Types.DATE :
-		case Types.TIME :
-		case Types.TIMESTAMP :
+		case Types.SMALLINT:
+		case Types.BIT:
+		case Types.TINYINT:
+		case Types.INTEGER:
+		case Types.BIGINT:
+		case Types.DATE:
+		case Types.TIME:
+		case Types.TIMESTAMP:
 			dbCol = new DbColumnNoParam(colName, colType, colDef);
 			break;
-		case Types.CHAR : 
-		case Types.NCHAR :
-		case Types.VARCHAR :
-		case Types.NVARCHAR :
-		case Types.BLOB :
-		case Types.BINARY :
-		case Types.VARBINARY :
-			
-		case Types.LONGNVARCHAR :
-		case Types.LONGVARBINARY :
-		case Types.LONGVARCHAR :
+		case Types.CHAR:
+		case Types.NCHAR:
+		case Types.VARCHAR:
+		case Types.NVARCHAR:
+		case Types.BLOB:
+		case Types.BINARY:
+		case Types.VARBINARY:
+
+		case Types.LONGNVARCHAR:
+		case Types.LONGVARBINARY:
+		case Types.LONGVARCHAR:
 			if (colType.equals("ENUM") || colType.equals("SET")) {
 				colType = "VARCHAR";
 			}
 			dbCol = new DbColumnOneParam(colName, colType, colDef, colSize);
 			break;
-		case Types.DECIMAL :
-		case Types.DOUBLE : 
-		case Types.FLOAT :
-		case Types.NUMERIC :
-		case Types.REAL :
+		case Types.DECIMAL:
+		case Types.DOUBLE:
+		case Types.FLOAT:
+		case Types.NUMERIC:
+		case Types.REAL:
 			dbCol = new DbColumnTwoParam(colName, colType, colDef, colSize, decimalDigit);
 			break;
-		default :
+		default:
 			/*
-			 * ARRAY
-			 * BOOLEAN
-			 * CLOB
-			 * NCLOB
-			 * DATALINK
-			 * DISTINCT
-			 * JAVA_OBJECT
-			 * REF
-			 * ROWID
-			 * SQLXML
-			 * STRUCT
+			 * ARRAY BOOLEAN CLOB NCLOB DATALINK DISTINCT JAVA_OBJECT REF ROWID
+			 * SQLXML STRUCT
 			 */
 			break;
 		}
 		return dbCol;
 	}
-	
+
+	/**
+	 * Convert the string got from the sql parameter isNullable to a boolean
+	 * 
+	 * @param nullable
+	 * @return
+	 */
 	private static boolean isNullable(String nullable) {
 		boolean isNullable = false;
 		switch (nullable) {
@@ -113,6 +113,4 @@ public class DbColumnFactory {
 		}
 		return isNullable;
 	}
-
-
 }

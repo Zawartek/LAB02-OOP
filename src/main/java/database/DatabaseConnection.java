@@ -17,29 +17,32 @@ public class DatabaseConnection {
 
 	public DatabaseConnection(String url, String driver, String user, String password) {
 		jdbcURL = url;
-		jdbcDriver =  driver;
+		jdbcDriver = driver;
 		this.user = user;
 		this.password = password;
 	}
 
 	/**
 	 * Return the database connection
+	 * 
 	 * @return connection
 	 */
 	public Connection getConnection() {
 		return connection;
 	}
-	
+
 	/**
 	 * Return the connection statement
+	 * 
 	 * @return statement
 	 */
 	public Statement getStatement() {
 		return statement;
 	}
-	
+
 	/**
 	 * Return the database metadata
+	 * 
 	 * @return
 	 */
 	public DatabaseMetaData getMetaData() {
@@ -48,9 +51,10 @@ public class DatabaseConnection {
 
 	/**
 	 * Init the Connection to the database
+	 * 
 	 * @throws Exception
 	 */
-	private void initialiseConnection() throws Exception{
+	public void initialiseConnection() throws Exception {
 		Class.forName(jdbcDriver);
 		connection = DriverManager.getConnection(jdbcURL, user, password);
 		statement = connection.createStatement();
@@ -70,28 +74,30 @@ public class DatabaseConnection {
 				connection.close();
 				connection = null;
 			}
+			if (dbMeta != null) {
+				dbMeta = null;
+			}
 		} catch (Exception e) {
 			System.out.println("Error : " + e.getMessage());
-			//e.printStackTrace();
+			// e.printStackTrace();
 		}
 	}
-	
+
 	public static void main(String[] args) {
 		String dbName = "sakila";
-		String[] tabTypes = {"TABLE"};
-		DatabaseConnection dbCon = new DatabaseConnection("jdbc:mysql://localhost/"+dbName, "com.mysql.jdbc.Driver", "root", "root");
+		String[] tabTypes = { "TABLE" };
+		DatabaseConnection dbCon = new DatabaseConnection("jdbc:mysql://localhost/" + dbName, "com.mysql.jdbc.Driver",
+				"root", "root");
 		DbBase db = new DbBase(dbName);
 		try {
 			dbCon.initialiseConnection();
-			db.loadDB(dbCon.getMetaData(),tabTypes);
+			db.loadDB(dbCon.getMetaData(), tabTypes);
 			db.printToSql();
 			db.exportToSql();
 			dbCon.closeConnection();
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-		
 	}
 }
