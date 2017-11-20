@@ -18,24 +18,27 @@ public class DbIndexFactory {
 	 */
 	public static DbIndex create(String indexName, String type, ResultSet result) throws SQLException {
 		DbIndex index = null;
-		boolean isUnique;
-		String columnName;
 		switch (type) {
 		case "FOREIGN" :
 			index = createForeignKey(indexName, result);
 			break;
 		case "PRIMARY" :
-			columnName = result.getString("COLUMN_NAME");
-			index = new DbPrimaryKey(indexName, columnName);
+			index = createPrimaryKey(indexName, result);
 			break;
 		case "INDEX" :
-			columnName = result.getString("COLUMN_NAME");
-			isUnique = result.getBoolean("NON_UNIQUE");
-			index = createIndex(indexName, columnName, isUnique);
+			index = createIndex(indexName, result);
 			break;
 		default :
 			break;
 		}
+		return index;
+	}
+	
+	private static DbIndex createPrimaryKey(String indexName, ResultSet result) throws SQLException {
+		DbIndex index = null;
+		String columnName = null;
+		columnName = result.getString("COLUMN_NAME");
+		index = new DbPrimaryKey(indexName, columnName);
 		return index;
 	}
 	
@@ -64,13 +67,17 @@ public class DbIndexFactory {
 	 * @return index
 	 * @throws SQLException
 	 */
-	private static DbIndex createIndex(String indexName, String colName, boolean nonUnique) throws SQLException {
+	private static DbIndex createIndex(String indexName, ResultSet result) throws SQLException {
 		DbIndex index = null;
+		boolean nonUnique;
+		String columnName;
+		columnName = result.getString("COLUMN_NAME");
+		nonUnique = result.getBoolean("NON_UNIQUE");
 		if (nonUnique) {
-			index = new DbIndex(indexName, colName);
+			index = new DbIndex(indexName, columnName);
 		}
 		else {
-			index = new DbUniqueIndex(indexName, colName);
+			index = new DbUniqueIndex(indexName, columnName);
 		}
 		return index;
 	}
@@ -99,6 +106,5 @@ public class DbIndexFactory {
 		default :
 			break;
 		}
-		
 	}
 }
