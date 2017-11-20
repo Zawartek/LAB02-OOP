@@ -4,9 +4,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 
+import org.apache.log4j.Logger;
+
 import main.java.database.table.column.*;
 
 public class DbColumnFactory {
+	protected static Logger log = Logger.getLogger(DbColumnFactory.class);
 
 	/**
 	 * Create an object DbColumn based on the data in the resultset
@@ -16,6 +19,7 @@ public class DbColumnFactory {
 	 * @throws SQLException
 	 */
 	public static DbColumn createColumn(ResultSet column) throws SQLException {
+		log.debug("Start method createColumn");
 		DbColumn dbCol = null;
 		String columnName, columnType, nullable, columnDefault;
 		int columnSize, decimalDigit, sqlType;
@@ -29,8 +33,16 @@ public class DbColumnFactory {
 		decimalDigit = column.getInt("DECIMAL_DIGITS");
 		nullable = column.getString("IS_NULLABLE");
 		isNullable = isNullable(nullable);
+		log.debug("column.COLUMN_NAME : " + columnName);
+		log.debug("column.TYPE_NAME : " + columnType);
+		log.debug("column.COLUMN_DEF : " + columnDefault);
+		log.debug("column.DATA_TYPE : " + sqlType);
+		log.debug("column.COLUMN_SIZE : " + columnSize);
+		log.debug("column.DECIMAL_DIGITS : " + decimalDigit);
+		log.debug("column.IS_NULLABLE : " + nullable);
 
 		dbCol = createColumn(columnName, columnType, columnDefault, sqlType, columnSize, decimalDigit, isNullable);
+		log.debug("End method createColumn");
 		return dbCol;
 	}
 
@@ -48,6 +60,11 @@ public class DbColumnFactory {
 	 */
 	private static DbColumn createColumn(String colName, String colType, String colDef, int sqlType, int colSize,
 			int decimalDigit, boolean isNull) {
+		log.debug("Start method createColumn");
+		log.debug("column name : " + colName);
+		log.debug("column type : " + colType);
+		log.debug("sqlType : " + sqlType);
+		log.debug("column default :" + colDef);
 		DbColumn dbCol = null;
 		switch (sqlType) {
 		case Types.SMALLINT:
@@ -58,6 +75,7 @@ public class DbColumnFactory {
 		case Types.DATE:
 		case Types.TIME:
 		case Types.TIMESTAMP:
+			log.debug("Create Column with no parameter");
 			dbCol = new DbColumnNoParam(colName, colType, colDef);
 			break;
 		case Types.CHAR:
@@ -74,6 +92,8 @@ public class DbColumnFactory {
 			if (colType.equals("ENUM") || colType.equals("SET")) {
 				colType = "VARCHAR";
 			}
+			log.debug("Create Column with one parameter");
+			log.debug("column size : " + colSize);
 			dbCol = new DbColumnOneParam(colName, colType, colDef, colSize);
 			break;
 		case Types.DECIMAL:
@@ -81,6 +101,9 @@ public class DbColumnFactory {
 		case Types.FLOAT:
 		case Types.NUMERIC:
 		case Types.REAL:
+			log.debug("Create Column with two parameters");
+			log.debug("column size : " + colSize);
+			log.debug("decimal digits : " + decimalDigit);
 			dbCol = new DbColumnTwoParam(colName, colType, colDef, colSize, decimalDigit);
 			break;
 		default:
@@ -90,6 +113,7 @@ public class DbColumnFactory {
 			 */
 			break;
 		}
+		log.debug("End method createColumn");
 		return dbCol;
 	}
 

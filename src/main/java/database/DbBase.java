@@ -56,10 +56,11 @@ public class DbBase {
 	 * @throws SQLException
 	 */
 	public void loadDB(DatabaseMetaData dbMetaData, String[] tableTypes) throws SQLException {
+		log.debug("Start method loadDB");
 		ResultSet result = null;
 		DbTable table = null;
-		log.debug("Start method loadDB");
-		result = dbMetaData.getTables(null, null, "%", null);
+		log.debug("Table Types : " + tableTypes);
+		result = dbMetaData.getTables(null, null, "%", tableTypes);
 		if (!result.next()) {
 			log.debug("No table in the database");
 		} else {
@@ -67,8 +68,12 @@ public class DbBase {
 			do {
 				table = DbTableFactory.createTable(result);
 				if (table != null) {
+					log.debug("Table " + table.getName() + " created");
 					tables.add(table);
 					table.loadTable(dbMetaData);
+				}
+				else {
+					log.debug("Failed to created table");
 				}
 			} while (result.next());
 		}
@@ -82,7 +87,7 @@ public class DbBase {
 	 * @return
 	 */
 	public String toSQL() {
-		log.debug("DbBase : Start method toSQL");
+		log.debug("Start method toSQL");
 		final StringBuffer sb = new StringBuffer();
 		sb.append("-- Database " + this.dbName + "\n");
 		sb.append("CREATE DATABASE " + this.dbName + ";\n\n");
@@ -104,7 +109,7 @@ public class DbBase {
 			}
 		}
 
-		log.debug("DbBase : End method toSQL");
+		log.debug("End method toSQL");
 		return sb.toString();
 	}
 
@@ -117,6 +122,8 @@ public class DbBase {
 	public static String stringToSQL(String s) {
 		String newString = "";
 		newString = STRING_QUOTE + s + STRING_QUOTE;
+		log.debug("Convert the string to SQL format");
+		log.debug("String : " + s + " - New String : " + newString);
 		return newString;
 	}
 
@@ -131,12 +138,15 @@ public class DbBase {
 	 * Create the .sql file with the string return by toSql method
 	 */
 	public void exportToSql() {
+		log.debug("Start method exportToSql");
 		try {
 			FileWriter file = new FileWriter("script.sql");
 			file.write(this.toSQL());
 			file.close();
 		} catch (IOException e) {
+			log.debug("Export of the sql script failed \n" + e.getStackTrace());
 			e.printStackTrace();
 		}
+		log.debug("End method exportToSql");
 	}
 }

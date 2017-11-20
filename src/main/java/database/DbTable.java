@@ -65,6 +65,7 @@ public class DbTable {
 	 * @throws SQLException
 	 */
 	public void loadColumns(DatabaseMetaData dbMetaData) throws SQLException {
+		log.debug("Start method loadColumns");
 		DbColumn column = null;
 		ResultSet result = null;
 		result = dbMetaData.getColumns(null, null, tableName, null);
@@ -74,9 +75,11 @@ public class DbTable {
 			log.debug("Column(s) found in the database");
 			do {
 				column = DbColumnFactory.createColumn(result);
+				log.debug("Column " + column.getName() + "created");
 				columns.add(column);
 			} while (result.next());
 		}
+		log.debug("End method loadColumns");
 		result.close();
 	}
 
@@ -87,9 +90,11 @@ public class DbTable {
 	 * @throws SQLException
 	 */
 	public void loadIndexes(DatabaseMetaData dbMetaData) throws SQLException {
+		log.debug("Start method loadIndexes");
 		loadPrimaryKeys(dbMetaData);
 		loadForeignKeys(dbMetaData);
 		loadIndex(dbMetaData);
+		log.debug("End method loadIndexes");
 	}
 
 	/**
@@ -99,6 +104,7 @@ public class DbTable {
 	 * @throws SQLException
 	 */
 	private void loadPrimaryKeys(DatabaseMetaData dbMetaData) throws SQLException {
+		log.debug("Start method loadPrimaryKeys");
 		DbIndex index = null;
 		String primaryKeyName = null, lastPrimaryKeyName = null;
 		ResultSet primaryKeys = dbMetaData.getPrimaryKeys(null, null, tableName);
@@ -109,12 +115,15 @@ public class DbTable {
 			}
 			if (lastPrimaryKeyName == null || !lastPrimaryKeyName.equals(primaryKeyName)) {
 				index = DbIndexFactory.create(primaryKeyName, "PRIMARY", primaryKeys);
+				log.debug("Primary key created for table " + this.getName());
 				indexes.add(index);
 			} else {
 				DbIndexFactory.addIndexColumn(index, "PRIMARY", primaryKeys);
+				log.debug("Add a column to the primary key");
 			}
 			lastPrimaryKeyName = primaryKeyName;
 		}
+		log.debug("End method loadPrimaryKeys");
 	}
 
 	/**
@@ -124,6 +133,7 @@ public class DbTable {
 	 * @throws SQLException
 	 */
 	private void loadForeignKeys(DatabaseMetaData dbMetaData) throws SQLException {
+		log.debug("Start method loadForeignKeys");
 		DbIndex index = null;
 		String foreignName = null, lastForeignName = null;
 		ResultSet foreignKeys = dbMetaData.getImportedKeys(null, null, tableName);
@@ -131,12 +141,15 @@ public class DbTable {
 			foreignName = foreignKeys.getString("FK_NAME");
 			if (lastForeignName == null || !lastForeignName.equals(foreignName)) {
 				index = DbIndexFactory.create(foreignName, "FOREIGN", foreignKeys);
+				log.debug("Foreign key "+ index.getName() +" created for table " + this.getName());
 				foreignIndexes.add(index);
 			} else {
 				DbIndexFactory.addIndexColumn(index, "FOREIGN", foreignKeys);
+				log.debug("Add a column to the foreign key " + index.getName());
 			}
 			lastForeignName = foreignName;
 		}
+		log.debug("End method loadForeignKeys");
 	}
 
 	/**
@@ -146,6 +159,7 @@ public class DbTable {
 	 * @throws SQLException
 	 */
 	private void loadIndex(DatabaseMetaData dbMetaData) throws SQLException {
+		log.debug("Start method loadIndex");
 		DbIndex index = null;
 		String indexName = null, lastIndexName = null;
 		ResultSet indexesInfo = dbMetaData.getIndexInfo(null, null, tableName, false, false);
@@ -154,14 +168,17 @@ public class DbTable {
 			if (!fordiddenIndexes.contains(indexName)) {
 				if (indexName != null && !indexName.equals(lastIndexName)) {
 					index = DbIndexFactory.create(indexName, "INDEX", indexesInfo);
+					log.debug("Index "+ index.getName() +" created for table " + this.getName());
 					indexes.add(index);
 				} else {
 					DbIndexFactory.addIndexColumn(index, "INDEX", indexesInfo);
+					log.debug("Add a column to the index " + index.getName());
 				}
 				lastIndexName = indexName;
 			}
 		}
 		checkIndexes();
+		log.debug("End method loadIndex");
 	}
 
 	/**
@@ -174,6 +191,8 @@ public class DbTable {
 					if (index.getColumnNames().contains(column.getName())
 							&& (column.getType().equals("BLOB") || column.getType().equals("TEXT"))) {
 						index.setFullText();
+						log.debug(index.getName() + " is a fulltext index");
+						break;
 					}
 				}
 			}
@@ -200,7 +219,7 @@ public class DbTable {
 	 * 
 	 * @return
 	 */
-	public String columnsToSQL() {
+	protected String columnsToSQL() {
 		final StringBuffer sb = new StringBuffer();
 		sb.append("CREATE TABLE " + this.tableName + " (\n");
 		for (DbColumn column : columns) {
