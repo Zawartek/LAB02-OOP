@@ -141,7 +141,7 @@ public class DbTable {
 			foreignName = foreignKeys.getString("FK_NAME");
 			if (lastForeignName == null || !lastForeignName.equals(foreignName)) {
 				index = DbIndexFactory.create(foreignName, "FOREIGN", foreignKeys);
-				log.debug("Foreign key "+ index.getName() +" created for table " + this.getName());
+				log.debug("Foreign key " + index.getName() + " created for table " + this.getName());
 				foreignIndexes.add(index);
 			} else {
 				DbIndexFactory.addIndexColumn(index, "FOREIGN", foreignKeys);
@@ -168,7 +168,7 @@ public class DbTable {
 			if (!fordiddenIndexes.contains(indexName)) {
 				if (indexName != null && !indexName.equals(lastIndexName)) {
 					index = DbIndexFactory.create(indexName, "INDEX", indexesInfo);
-					log.debug("Index "+ index.getName() +" created for table " + this.getName());
+					log.debug("Index " + index.getName() + " created for table " + this.getName());
 					indexes.add(index);
 				} else {
 					DbIndexFactory.addIndexColumn(index, "INDEX", indexesInfo);

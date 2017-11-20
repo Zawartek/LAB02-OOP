@@ -71,8 +71,7 @@ public class DbBase {
 					log.debug("Table " + table.getName() + " created");
 					tables.add(table);
 					table.loadTable(dbMetaData);
-				}
-				else {
+				} else {
 					log.debug("Failed to created table");
 				}
 			} while (result.next());

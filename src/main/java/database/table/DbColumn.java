@@ -44,9 +44,10 @@ public abstract class DbColumn {
 	public String getDefault() {
 		return columnDefault;
 	}
-	
+
 	/**
 	 * Get the isNullable value
+	 * 
 	 * @return
 	 */
 	public boolean isNullable() {

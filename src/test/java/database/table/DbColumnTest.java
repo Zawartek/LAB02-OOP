@@ -11,7 +11,7 @@ import main.java.database.table.DbColumn;
 import main.java.database.table.DbColumnFactory;
 import main.java.database.table.column.*;
 
-public class DbColumnTest  extends TestCase {
+public class DbColumnTest extends TestCase {
 	public DbColumnTest(String testName) {
 		super(testName);
 	}
@@ -20,12 +20,13 @@ public class DbColumnTest  extends TestCase {
 	public static Test suite() {
 		return new TestSuite(DbColumnTest.class);
 	}
-	
+
 	public void testFactory() {
 		DbColumn column = null;
-		DatabaseConnection dbCon = new DatabaseConnection("jdbc:mysql://localhost/sakila", "com.mysql.jdbc.Driver", "root", "root");
+		DatabaseConnection dbCon = new DatabaseConnection("jdbc:mysql://localhost/sakila", "com.mysql.jdbc.Driver",
+				"root", "root");
 		ResultSet colResultSet;
-		String tableName = "film_actor", columnName="film_id", columnType="SMALLINT UNSIGNED", toSQL=null;
+		String tableName = "film_actor", columnName = "film_id", columnType = "SMALLINT UNSIGNED", toSQL = null;
 		toSQL = "\t`film_id` SMALLINT UNSIGNED NOT NULL";
 		try {
 			dbCon.initialiseConnection();
@@ -38,16 +39,15 @@ public class DbColumnTest  extends TestCase {
 				assertEquals(column.getType(), columnType);
 				assertNull(column.getDefault());
 				assertFalse(column.isNullable());
-				assertEquals(column.toSQL(),toSQL);
-			}
-			else {
+				assertEquals(column.toSQL(), toSQL);
+			} else {
 				fail("Column not found");
 			}
 			dbCon.closeConnection();
-		} catch(SQLException se) {
+		} catch (SQLException se) {
 			se.printStackTrace();
 			fail("SQL exception");
-		} catch(Exception e) {
+		} catch (Exception e) {
 			fail("Connection with the database fail");
 		}
 	}

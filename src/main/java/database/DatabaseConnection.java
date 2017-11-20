@@ -86,8 +86,7 @@ public class DatabaseConnection {
 	public static void main(String[] args) {
 		String dbName = "sakila";
 		String[] tabTypes = { "TABLE" };
-		DatabaseConnection dbCon = new DatabaseConnection("jdbc:mysql://localhost/" + dbName, "com.mysql.jdbc.Driver",
-				"root", "root");
+		DatabaseConnection dbCon = new DatabaseConnection("jdbc:mysql://localhost/" + dbName, "com.mysql.jdbc.Driver", "root", "root");
 		DbBase db = new DbBase(dbName);
 		try {
 			dbCon.initialiseConnection();

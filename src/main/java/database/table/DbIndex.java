@@ -56,14 +56,15 @@ public class DbIndex {
 	public void setFullText() {
 		fulltext = true;
 	}
-	
+
 	/**
 	 * Get the fulltext mode of an index
+	 * 
 	 * @return
 	 */
 	public boolean isFullText() {
-        return fulltext;
-    }
+		return fulltext;
+	}
 
 	/**
 	 * Return the index in SQL format
